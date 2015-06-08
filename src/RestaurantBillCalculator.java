@@ -108,13 +108,16 @@ public class RestaurantBillCalculator extends JFrame
   String databaseUserName, String databasePassword )
    {
 
-       // make database connection - need to check for a solution of try block
+       // make database connection
        try
        {
-        String url = "jdbc:mysql://localhost:3306/restaurant";
-        String driver = "com.mysql.jdbc.Driver";
+
+        } catch (Exception e) {e.printStackTrace();
+        
             try
             {
+               String driver = "com.mysql.jdbc.Driver";
+               String url = "jdbc:mysql://localhost:3306/restaurant";
                Class.forName(driver).newInstance(); 
                Connection conn = DriverManager.getConnection(url,databaseUserName, databasePassword);
                myStatement = myConnection.createStatement();
