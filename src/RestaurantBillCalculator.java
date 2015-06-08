@@ -8,7 +8,15 @@ import java.awt.event.*;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
-import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 
 
@@ -82,8 +90,8 @@ public class RestaurantBillCalculator extends JFrame
    private Statement myStatement;
    private ResultSet myResultSet;
 
-//   // declare instance variable ArrayList to hold bill items
-//   private ArrayList billItems = new ArrayList();
+   // declare instance variable ArrayList to hold bill items
+   private ArrayList billItems = new ArrayList();
 
    //declare instance variables Subtotal -added
    private double subtotal;
@@ -96,12 +104,33 @@ public class RestaurantBillCalculator extends JFrame
    
    
    // constructor
-   public RestaurantBillCalculator() 
-//   String databaseUserName, String databasePassword )
+   public RestaurantBillCalculator( 
+  String databaseUserName, String databasePassword )
    {
 
+       // make database connection - need to check for a solution of try block
+       try
+       {
+        String url = "jdbc:mysql://localhost:3306/restaurant";
+        String driver = "com.mysql.jdbc.Driver";
+            try
+            {
+               Class.forName(driver).newInstance(); 
+               Connection conn = DriverManager.getConnection(url,databaseUserName, databasePassword);
+               myStatement = myConnection.createStatement();
+            }
+            catch ( SQLException exception )
+            {   
+               exception.printStackTrace();
+            }
+            catch ( ClassNotFoundException exception )
+           {
+                exception.printStackTrace();
+           }
+       }       
+               
       createUserInterface(); // set up GUI  
-
+            
       // TODO: code to connect to the database
 
    } // end constructor
@@ -133,16 +162,23 @@ public class RestaurantBillCalculator extends JFrame
      // set up menuItemsJPanel
      createMenuItemsJPanel();
      contentPane.add( menuItemsJPanel );
-//
+
 //            public void actionPerformed( ActionEvent event ) 
 //            {
 //               calculateBillJButtonActionPerformed( event );
 //            }
 //
 //         } // end anonymous inner class
-
+//
 //      ); // end addActionListener
       
+     
+     //Calculate Bill button
+     calculateBillJButton = new JButton();
+     calculateBillJButton.setBounds( 70, 310, 110, 20 );
+     calculateBillJButton.setText( "Calculate Bill" );
+     contentPane.add( calculateBillJButton );    
+     
       // **** TODO ****** set up subtotalJLabel
      // set up subtotalJLabel
      subtotalJLabel = new JLabel();
@@ -201,10 +237,10 @@ public class RestaurantBillCalculator extends JFrame
 
 
       // **** TODO ****** ensure database connection is closed
-//      // **** TODO ****** when user quits application
+      // **** TODO ****** when user quits application
 //      addWindowListener(
 //
-//         new WindowAdapter()anonymous inner class
+//         new WindowAdapter()//anonymous inner class
 //         {
 //            //  event handler called when close button is clicked
 //            public void windowClosing( WindowEvent event )
@@ -428,23 +464,23 @@ public class RestaurantBillCalculator extends JFrame
    // **** TODO ****** method main
    public static void main( String[] args ) 
    {
-      // **** TODO ****** check command-line arguments
-//      if ( args.length == 2 )
-//      {
-         // **** TODO ****** get command-line arguments
-//         String databaseUserName = args[ 0 ];
-//         String databasePassword = args[ 1 ];
+       //**** TODO ****** check command-line arguments
+      if ( args.length == 2 )
+      {
+          //**** TODO ****** get command-line arguments
+         String databaseUserName = args[ 0 ];
+         String databasePassword = args[ 1 ];
 
-         // **** TODO ****** create new RestaurantBillCalculator
+          //**** TODO ****** create new RestaurantBillCalculator
          RestaurantBillCalculator application = 
-            new RestaurantBillCalculator ( );
-//               databaseUserName, databasePassword );
-//      }
-//      else
-//      {
-//         System.out.println( "Usage: java " + 
-//            "RestaurantBillCalculator databaseUserName databasePassword" );
-//    }
+            new RestaurantBillCalculator ( 
+               databaseUserName, databasePassword );
+      }
+      else
+      {
+         System.out.println( "Usage: java " + 
+            "RestaurantBillCalculator databaseUserName databasePassword" );
+    }
 
    } // end method main
 
