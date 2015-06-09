@@ -107,31 +107,21 @@ public class RestaurantBillCalculator extends JFrame
    public RestaurantBillCalculator( 
   String databaseUserName, String databasePassword )
    {
-
-       // make database connection
-       try
-       {
-
-        } catch (Exception e) {e.printStackTrace();
+ 
+    // make database connection
+        String url = "jdbc:mysql://localhost:3306/restaurant";
+        String driver = "com.mysql.jdbc.Driver";
         
-            try
-            {
-               String driver = "com.mysql.jdbc.Driver";
-               String url = "jdbc:mysql://localhost:3306/restaurant";
-               Class.forName(driver).newInstance(); 
-               Connection conn = DriverManager.getConnection(url,databaseUserName, databasePassword);
-               myStatement = myConnection.createStatement();
-            }
-            catch ( SQLException exception )
-            {   
-               exception.printStackTrace();
-            }
-            catch ( ClassNotFoundException exception )
-           {
-                exception.printStackTrace();
-           }
-       }       
-               
+        try{
+         Class.forName(driver).newInstance();
+         Connection conn = DriverManager.getConnection(url,databaseUserName, databasePassword); 
+         System.out.println("Connected to DB");
+         myStatement = myConnection.createStatement();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
       createUserInterface(); // set up GUI  
             
       // TODO: code to connect to the database
@@ -470,6 +460,7 @@ public class RestaurantBillCalculator extends JFrame
        //**** TODO ****** check command-line arguments
       if ( args.length == 2 )
       {
+          
           //**** TODO ****** get command-line arguments
          String databaseUserName = args[ 0 ];
          String databasePassword = args[ 1 ];
