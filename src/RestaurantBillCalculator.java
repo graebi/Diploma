@@ -17,6 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 
 
 
@@ -114,9 +117,26 @@ public class RestaurantBillCalculator extends JFrame
         
         try{
          Class.forName(driver).newInstance();
-         Connection conn = DriverManager.getConnection(url,databaseUserName, databasePassword); 
+         Connection myConnection = DriverManager.getConnection(url,databaseUserName, databasePassword); 
          System.out.println("Connected to DB");
          myStatement = myConnection.createStatement();
+         
+// //test
+//                  // query database                                        
+//         myResultSet = myStatement.executeQuery(            
+//            "SELECT * FROM menue" );
+//          // process query results
+//         
+//         ResultSetMetaData metaData = myResultSet.getMetaData();
+//         int numberOfColumns = metaData.getColumnCount();     
+//         System.out.println( "test:\n" );   
+//
+//         
+//         
+//         
+//         
+////end test 
+
         }
         catch(Exception e){
             e.printStackTrace();
@@ -170,7 +190,8 @@ public class RestaurantBillCalculator extends JFrame
      calculateBillJButton = new JButton();
      calculateBillJButton.setBounds( 70, 310, 110, 20 );
      calculateBillJButton.setText( "Calculate Bill" );
-     contentPane.add( calculateBillJButton );    
+     contentPane.add( calculateBillJButton );   
+     
      
       // **** TODO ****** set up subtotalJLabel
      // set up subtotalJLabel
@@ -314,23 +335,23 @@ public class RestaurantBillCalculator extends JFrame
       beverageJComboBox.setBounds( 88, 24, 128, 24 );
       beverageJComboBox.setEnabled( false );
       menuItemsJPanel.add( beverageJComboBox );
-//      beverageJComboBox.addItemListener(
+      beverageJComboBox.addItemListener(
 
-//         new ItemListener()  // **** TODO ****** anonymous inner class
-//         {
-//            // **** TODO ****** event handler called when item in beverageJComboBox
-//            // **** TODO ****** is selected
-//            public void itemStateChanged( ItemEvent event )
-//            {
-//               beverageJComboBoxItemStateChanged( event );
-//            }
+         new ItemListener()  // **** TODO ****** anonymous inner class
+         {
+            // **** TODO ****** event handler called when item in beverageJComboBox
+            // **** TODO ****** is selected
+            public void itemStateChanged( ItemEvent event )
+            {
+               beverageJComboBoxItemStateChanged( event );
+            }
 
-//         } // end anonymous inner class
-//
-//      ); // end addItemListener
-//
-//      // **** TODO ****** add items to beverageJComboBox
-//      // add items to beverageJComboBox
+         } // end anonymous inner class
+
+      ); // end addItemListener
+
+////       **** TODO ****** add items to beverageJComboBox
+////       add items to beverageJComboBox
 //      beverageJComboBox.addItem( "" );
 //      loadCategory( "Beverage", beverageJComboBox );
 //        }
@@ -412,7 +433,12 @@ public class RestaurantBillCalculator extends JFrame
    // **** TODO ****** user select beverage
    private void beverageJComboBoxItemStateChanged( ItemEvent event )
    {
-      
+      // select an item
+       if ( event.getStateChange() == ItemEvent.SELECTED )
+           {
+             billItems.add(( String ) beverageJComboBox.getSelectedItem() );  
+           }
+           
    } // end method beverageJComboBoxItemStateChanged
 
    // **** TODO ****** user select appetizer
@@ -435,10 +461,13 @@ public class RestaurantBillCalculator extends JFrame
    } // end method dessertJComboBoxItemStateChanged
 
    // **** TODO ****** user click Calculate Bill JButton
-   private void calculateBillJButtonActionPerformed( 
-      ActionEvent event )
-   {
-      
+//   private void calculateBillJButtonActionPerformed( 
+//      ActionEvent event )
+//   {
+//       double total = calculateSubtotal();
+//       // display subtotal, tax and total
+//       displayTotal( total );
+//      
 //   } // end method calculateBillJButtonActionPerformed
 //
 //   // **** TODO ****** calculate subtotal
@@ -452,7 +481,7 @@ public class RestaurantBillCalculator extends JFrame
 //   private void frameWindowClosing( WindowEvent event )
 //   {
       
-   }  // end method frameWindowClosing
+//   }  // end method frameWindowClosing
 
    // **** TODO ****** method main
    public static void main( String[] args ) 
