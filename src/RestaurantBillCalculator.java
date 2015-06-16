@@ -117,9 +117,13 @@ public class RestaurantBillCalculator extends JFrame
         
         try{
          Class.forName(driver).newInstance();
-         Connection myConnection = DriverManager.getConnection(url,databaseUserName, databasePassword); 
+         myConnection = DriverManager.getConnection(url,databaseUserName, databasePassword); 
+         myStatement = myConnection.createStatement();
          System.out.println("Connected to DB");
          myStatement = myConnection.createStatement();
+         
+         
+         
          
 // //test
 //                  // query database                                        
@@ -350,27 +354,44 @@ public class RestaurantBillCalculator extends JFrame
 
       ); // end addItemListener
 
-////       **** TODO ****** add items to beverageJComboBox
-////       add items to beverageJComboBox
-//      beverageJComboBox.addItem( "" );
-//      loadCategory( "Beverage", beverageJComboBox );
-//        }
-//      } // end anonymous inner class
-//     ); // end addItemListener
+//       **** TODO ****** add items to beverageJComboBox
+//       add items to beverageJComboBox
+      beverageJComboBox.addItem( "" );
+      loadCategory( "Beverage", beverageJComboBox );
+
 
       // **** TODO ****** set up appetizerJLabel
       appetizerJLabel = new JLabel();
       appetizerJLabel.setBounds( 8, 55, 80, 24 );
       appetizerJLabel.setText( "Appetizer:" );
-      menuItemsJPanel.add( appetizerJLabel );
+      menuItemsJPanel.add( appetizerJLabel) ;
+     
 
       // **** TODO ****** set up appetizerJComboBox
       appetizerJComboBox = new JComboBox();
       appetizerJComboBox.setBounds( 88, 55, 128, 24 );
       appetizerJComboBox.setEnabled( false );
       menuItemsJPanel.add( appetizerJComboBox );
-//    appetizerJComboBox.addItemListener(
-      // **** TODO ****** add items to appetizerJComboBox
+      appetizerJComboBox.addItemListener(
+
+         new ItemListener()  // **** TODO ****** anonymous inner class
+         {
+            // **** TODO ****** event handler called when item in AppetizerJComboBox
+            // **** TODO ****** is selected
+            public void itemStateChanged( ItemEvent event )
+            {
+               appetizerJComboBoxItemStateChanged( event );
+            }
+
+         } // end anonymous inner class
+
+      ); // end addItemListener
+
+//       **** TODO ****** add items to AppetizerJComboBox
+//       add items to AppetizerJComboBox
+      appetizerJComboBox.addItem( "" );
+      loadCategory( "Appetizer", appetizerJComboBox );
+      
 
       // **** TODO ****** set up mainCourseJLabel
       mainCourseJLabel = new JLabel();
@@ -383,9 +404,27 @@ public class RestaurantBillCalculator extends JFrame
       mainCourseJComboBox.setBounds( 88, 86, 128, 24 );
       mainCourseJComboBox.setEnabled( false );
       menuItemsJPanel.add( mainCourseJComboBox );
-//      menuItemsJPanel.addItemListener(
+      mainCourseJComboBox.addItemListener(
       // **** TODO ****** add items to mainCourseJComboBox
+      
+         new ItemListener()  // **** TODO ****** anonymous inner class
+         {
+            // **** TODO ****** event handler called when item in mainCourseJComboBox
+            // **** TODO ****** is selected
+            public void itemStateChanged( ItemEvent event )
+            {
+               mainCourseJComboBoxItemStateChanged( event );
+            }
 
+         } // end anonymous inner class
+
+      ); // end addItemListener
+
+//       **** TODO ****** add items to mainCourseJComboBox
+//       add items to mainCourseJComboBox
+      mainCourseJComboBox.addItem( "" );
+      loadCategory( "Main Course", mainCourseJComboBox );
+      
 
       // **** TODO ****** set up dessertJLabel
       dessertJLabel = new JLabel();
@@ -398,9 +437,26 @@ public class RestaurantBillCalculator extends JFrame
       dessertJComboBox.setBounds( 88, 117, 128, 24 );
       dessertJComboBox.setEnabled( false );
       menuItemsJPanel.add( dessertJComboBox );
-//      dessertJComboBox.addItemListener(
-      // **** TODO ****** add items to dessertJComboBox
-      
+      dessertJComboBox.addItemListener(
+      // **** TODO ****** add items to dessertJComboBox 
+
+         new ItemListener()  // **** TODO ****** anonymous inner class
+         {
+            // **** TODO ****** event handler called when item in dessertJComboBox
+            // **** TODO ****** is selected
+            public void itemStateChanged( ItemEvent event )
+            {
+               dessertJComboBoxItemStateChanged( event );
+            }
+
+         } // end anonymous inner class
+
+      ); // end addItemListener
+
+//       **** TODO ****** add items to dessertJComboBox
+//       add items to dessertJComboBox
+      dessertJComboBox.addItem( "" );
+      loadCategory( "Dessert", dessertJComboBox );
       
    } // end method createMenuItemsJPanel
 
@@ -413,8 +469,8 @@ public class RestaurantBillCalculator extends JFrame
     try
     {
     // obtain all items in specified category
-    myResultSet = myStatement.executeQuery( "SELECT name FROM "
-    + "menu WHERE category = '" + category + "'" );
+    myResultSet = myStatement.executeQuery( 
+    "SELECT name FROM menu WHERE category = '" + category + "'" );
     // add items to JComboBox
     while ( myResultSet.next() == true )
     {
@@ -444,31 +500,44 @@ public class RestaurantBillCalculator extends JFrame
    // **** TODO ****** user select appetizer
    private void appetizerJComboBoxItemStateChanged( ItemEvent event )
    {
-      
+       // select an item
+       if ( event.getStateChange() == ItemEvent.SELECTED )
+           {
+             billItems.add(( String ) appetizerJComboBox.getSelectedItem() );  
+           }
+         
    } // end method appetizerJComboBoxItemStateChanged
 
    // **** TODO ****** user select main course
    private void mainCourseJComboBoxItemStateChanged( 
       ItemEvent event )
    {
-      
+       // select an item
+       if ( event.getStateChange() == ItemEvent.SELECTED )
+           {
+             billItems.add(( String ) mainCourseJComboBox.getSelectedItem() );  
+           }      
    } // end method mainCourseJComboBoxItemStateChanged
 
    // **** TODO ****** user select dessert
    private void dessertJComboBoxItemStateChanged( ItemEvent event )
    {
-      
+        // select an item
+       if ( event.getStateChange() == ItemEvent.SELECTED )
+           {
+             billItems.add(( String ) dessertJComboBox.getSelectedItem() );  
+           }       
    } // end method dessertJComboBoxItemStateChanged
 
    // **** TODO ****** user click Calculate Bill JButton
-//   private void calculateBillJButtonActionPerformed( 
-//      ActionEvent event )
-//   {
-//       double total = calculateSubtotal();
-//       // display subtotal, tax and total
-//       displayTotal( total );
-//      
-//   } // end method calculateBillJButtonActionPerformed
+   private void calculateBillJButtonActionPerformed( 
+      ActionEvent event )
+   {
+       double total = calculateSubtotal();
+       // display subtotal, tax and total
+       displayTotal( total );
+      
+   } // end method calculateBillJButtonActionPerformed
 //
 //   // **** TODO ****** calculate subtotal
 //   private double calculateSubtotal()
