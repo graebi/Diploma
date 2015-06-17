@@ -3,12 +3,15 @@
 
 //**** TODO ******  PROVIDE IMPORT STATEMENT Modify the import Statements so that only classes used are actually imported
 
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
-import java.text.*;
-import java.util.*;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.text.*;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,8 +20,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import java.util.ArrayList;
 
 
 
@@ -121,27 +130,8 @@ public class RestaurantBillCalculator extends JFrame
          myStatement = myConnection.createStatement();
          System.out.println("Connected to DB");
          myStatement = myConnection.createStatement();
-         
-         
-         
-         
-// //test
-//                  // query database                                        
-//         myResultSet = myStatement.executeQuery(            
-//            "SELECT * FROM menue" );
-//          // process query results
-//         
-//         ResultSetMetaData metaData = myResultSet.getMetaData();
-//         int numberOfColumns = metaData.getColumnCount();     
-//         System.out.println( "test:\n" );   
-//
-//         
-//         
-//         
-//         
-////end test 
 
-        }
+        }//end try
         catch(Exception e){
             e.printStackTrace();
         }
@@ -179,23 +169,24 @@ public class RestaurantBillCalculator extends JFrame
      // set up menuItemsJPanel
      createMenuItemsJPanel();
      contentPane.add( menuItemsJPanel );
-
-//            public void actionPerformed( ActionEvent event ) 
-//            {
-//               calculateBillJButtonActionPerformed( event );
-//            }
-//
-//         } // end anonymous inner class
-//
-//      ); // end addActionListener
-      
      
      //Calculate Bill button
      calculateBillJButton = new JButton();
      calculateBillJButton.setBounds( 70, 310, 110, 20 );
      calculateBillJButton.setText( "Calculate Bill" );
-     contentPane.add( calculateBillJButton );   
-     
+     contentPane.add( calculateBillJButton ); 
+     calculateBillJButton.addActionListener(
+        new ActionListener()
+            {
+             public void actionPerformed( ActionEvent event ) 
+            {
+               calculateBillJButtonActionPerformed( event );
+            }
+
+         } // end anonymous inner class
+
+      ); // end addActionListener
+         
      
       // **** TODO ****** set up subtotalJLabel
      // set up subtotalJLabel
@@ -256,19 +247,19 @@ public class RestaurantBillCalculator extends JFrame
 
       // **** TODO ****** ensure database connection is closed
       // **** TODO ****** when user quits application
-//      addWindowListener(
-//
-//         new WindowAdapter()//anonymous inner class
-//         {
-//            //  event handler called when close button is clicked
-//            public void windowClosing( WindowEvent event )
-//            {
-//               frameWindowClosing( event );
-//            }
-//
-//         } //  end anonymous inner class
-//
-//      ); // end addWindowListener
+      addWindowListener(
+
+         new WindowAdapter()//anonymous inner class
+         {
+            //  event handler called when close button is clicked
+            public void windowClosing( WindowEvent event )
+            {
+               frameWindowClosing( event );
+            }
+
+         } //  end anonymous inner class
+
+      ); // end addWindowListener
 
    } // end method createUserInterface
 
@@ -337,7 +328,7 @@ public class RestaurantBillCalculator extends JFrame
       // set up beverageJComboBox
       beverageJComboBox = new JComboBox();
       beverageJComboBox.setBounds( 88, 24, 128, 24 );
-      beverageJComboBox.setEnabled( false );
+//      beverageJComboBox.setEnabled( false ); - delete this
       menuItemsJPanel.add( beverageJComboBox );
       beverageJComboBox.addItemListener(
 
@@ -370,7 +361,7 @@ public class RestaurantBillCalculator extends JFrame
       // **** TODO ****** set up appetizerJComboBox
       appetizerJComboBox = new JComboBox();
       appetizerJComboBox.setBounds( 88, 55, 128, 24 );
-      appetizerJComboBox.setEnabled( false );
+//      appetizerJComboBox.setEnabled( false ); - delete this
       menuItemsJPanel.add( appetizerJComboBox );
       appetizerJComboBox.addItemListener(
 
@@ -402,8 +393,9 @@ public class RestaurantBillCalculator extends JFrame
       // **** TODO ****** set up mainCourseJComboBox
       mainCourseJComboBox = new JComboBox();
       mainCourseJComboBox.setBounds( 88, 86, 128, 24 );
-      mainCourseJComboBox.setEnabled( false );
+     // mainCourseJComboBox.setEnabled( false );- delete this
       menuItemsJPanel.add( mainCourseJComboBox );
+      
       mainCourseJComboBox.addItemListener(
       // **** TODO ****** add items to mainCourseJComboBox
       
@@ -435,7 +427,7 @@ public class RestaurantBillCalculator extends JFrame
      // **** TODO ****** set up dessertJComboBox 
       dessertJComboBox = new JComboBox();
       dessertJComboBox.setBounds( 88, 117, 128, 24 );
-      dessertJComboBox.setEnabled( false );
+//      dessertJComboBox.setEnabled( false );- delete this
       menuItemsJPanel.add( dessertJComboBox );
       dessertJComboBox.addItemListener(
       // **** TODO ****** add items to dessertJComboBox 
@@ -470,14 +462,14 @@ public class RestaurantBillCalculator extends JFrame
     {
     // obtain all items in specified category
     myResultSet = myStatement.executeQuery( 
-    "SELECT name FROM menu WHERE category = '" + category + "'" );
+    "SELECT name FROM menu WHERE category='"+category+"'");
     // add items to JComboBox
     while ( myResultSet.next() == true )
-    {
-    categoryJComboBox.addItem(
-    myResultSet.getString( "name" ) );
-    }
-    myResultSet.close(); // close myResultSet
+        {
+            categoryJComboBox.addItem(
+            myResultSet.getString( "name" ) );
+        }
+            myResultSet.close(); // close myResultSet
     } // end try
     // catch SQLException
     catch ( SQLException exception )
@@ -538,14 +530,14 @@ public class RestaurantBillCalculator extends JFrame
        displayTotal( total );
       
    } // end method calculateBillJButtonActionPerformed
-//
-//   // **** TODO ****** calculate subtotal
-//   private double calculateSubtotal()
-//   {
-//      return 0;
-//
-//   } // end method calculateSubtotal
-//
+
+   // **** TODO ****** calculate subtotal
+   private double calculateSubtotal()
+   {
+      return 0;
+
+   } // end method calculateSubtotal
+
 //   // **** TODO ****** user close window
 //   private void frameWindowClosing( WindowEvent event )
 //   {
