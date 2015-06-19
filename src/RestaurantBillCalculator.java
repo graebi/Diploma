@@ -28,8 +28,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.ArrayList;
-
-
+import javax.swing.JOptionPane;
 
 
 public class RestaurantBillCalculator extends JFrame
@@ -120,22 +119,24 @@ public class RestaurantBillCalculator extends JFrame
   String databaseUserName, String databasePassword )
    {
  
-    // make database connection
+    // Create database connection
+       //JDBC driver and datbase name
         String url = "jdbc:mysql://localhost:3306/restaurant";
         String driver = "com.mysql.jdbc.Driver";
         
         try{
          Class.forName(driver).newInstance();
+         //Connect to database
          myConnection = DriverManager.getConnection(url,databaseUserName, databasePassword); 
+         //Create statement
          myStatement = myConnection.createStatement();
-         System.out.println("Connected to DB");
+//         System.out.println("Connected to DB");
          myStatement = myConnection.createStatement();
 
         }//end try
         catch(Exception e){
             e.printStackTrace();
         }
-
       createUserInterface(); // set up GUI  
             
       // TODO: code to connect to the database
@@ -176,7 +177,7 @@ public class RestaurantBillCalculator extends JFrame
      calculateBillJButton.setText( "Calculate Bill" );
      contentPane.add( calculateBillJButton ); 
      calculateBillJButton.addActionListener(
-        new ActionListener()
+        new ActionListener() //anonymous inner class
             {
              public void actionPerformed( ActionEvent event ) 
             {
@@ -241,7 +242,6 @@ public class RestaurantBillCalculator extends JFrame
       // **** TODO ****** set properties of application's window
      setTitle( "Restaurant Bill Calculator" ); // set window title 
      setSize( 280, 500 ); // set window size
-     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//stop program when close the jframe
      setVisible( true ); // display window
 
 
@@ -301,10 +301,10 @@ public class RestaurantBillCalculator extends JFrame
 
       // **** TODO ****** set up waiterNameJTextField
       //Create tableNumberJTextField in waiterJPanel
-      tableNumberJTextField = new JTextField();//Create tableNumberJTextField in waiterJPanel
-      tableNumberJTextField.setHorizontalAlignment(SwingConstants.RIGHT);//
-      tableNumberJTextField.setBounds(125, 50, 90, 20);// Size and position of tableNumberJTextField in Waiter information
-      waiterJPanel.add(tableNumberJTextField);//Add tableNumberJTextField onto waiterJPanel
+      waiterNameJTextField = new JTextField();//Create tableNumberJTextField in waiterJPanel
+      waiterNameJTextField.setHorizontalAlignment(SwingConstants.RIGHT);//
+      waiterNameJTextField.setBounds(125, 50, 90, 20);// Size and position of tableNumberJTextField in Waiter information
+      waiterJPanel.add(waiterNameJTextField);//Add tableNumberJTextField onto waiterJPanel
 
    } // end method createWaiterJPanel
 
@@ -373,16 +373,13 @@ public class RestaurantBillCalculator extends JFrame
             {
                appetizerJComboBoxItemStateChanged( event );
             }
-
          } // end anonymous inner class
-
       ); // end addItemListener
 
 //       **** TODO ****** add items to AppetizerJComboBox
 //       add items to AppetizerJComboBox
       appetizerJComboBox.addItem( "" );
-      loadCategory( "Appetizer", appetizerJComboBox );
-      
+      loadCategory( "Appetizer", appetizerJComboBox );     
 
       // **** TODO ****** set up mainCourseJLabel
       mainCourseJLabel = new JLabel();
@@ -524,26 +521,84 @@ public class RestaurantBillCalculator extends JFrame
    // **** TODO ****** user click Calculate Bill JButton
    private void calculateBillJButtonActionPerformed( 
       ActionEvent event )
+           
    {
-       double total = calculateSubtotal();
-       // display subtotal, tax and total
-       displayTotal( total );
-      
+     if(!tableNumberJTextField.getText().equals("") && !waiterNameJTextField.getText().equals(""))
+       {
+           double total = calculateSubtotal();
+           // display subtotal, tax and total
+           displayTotal( total );   
+       }
+       else    
+       {    
+       JOptionPane.showMessageDialog (null, "Either table number or waiter number field is empty.", "Please fill out", JOptionPane.INFORMATION_MESSAGE);
+      }
    } // end method calculateBillJButtonActionPerformed
 
    // **** TODO ****** calculate subtotal
    private double calculateSubtotal()
    {
-      return 0;
-
+       double total = subtotal;
+       Object[] items = billItems.toArray();
+       
+       // get data from database
+       try {
+          // get price for each item in items array
+           for ( int i = 0; i < items.length; i++ ) {
+             // execute query to get price
+               myResultSet = myStatement.executeQuery( "SELECT price " +
+                  "FROM menu WHERE name = '" + ( String ) items[ i ] +"'" );
+               // myResultSet not empty
+               if ( myResultSet.next() == true )
+               {
+                total += myResultSet.getDouble( "price" );
+               } 
+               myResultSet.close(); // close myResultSet
+               } // end for
+           } // end try
+       // catch SQLException
+         catch ( SQLException exception ) {
+             exception.printStackTrace();
+             }
+       return total;
+       
    } // end method calculateSubtotal
-
-//   // **** TODO ****** user close window
-//   private void frameWindowClosing( WindowEvent event )
-//   {
+   
+   //method displayTotal is used to display subtotal, tax and total
+   private void displayTotal( double total )
+{
+    // define display format
+    DecimalFormat dollars = new DecimalFormat( "$0.00" );
+    // display subtotal
+    subtotalJTextField.setText( dollars.format( total ) );
+    // calculate and display tax
+    double tax = total * TAX_RATE;
+    taxJTextField.setText( dollars.format( total ) );
+    // display total
+    totalJTextField.setText(
+            dollars.format( total + tax ) );    
+} // end method displayTotal
+   
+    // **** TODO ****** user close window
+   private void frameWindowClosing( WindowEvent event )
+   {
+           // close myStatement and database connection
+           try
+           {
+               myStatement.close();
+               myConnection.close();
+           }
+           catch ( SQLException sqlException )
+           {
+               sqlException.printStackTrace();
+           }
+           finally
+           {
+               System.exit( 0 );
+           }
       
-//   }  // end method frameWindowClosing
-
+   }  // end method frameWindowClosing  
+   
    // **** TODO ****** method main
    public static void main( String[] args ) 
    {
