@@ -171,23 +171,83 @@ public class RestaurantBillCalculator extends JFrame
      createMenuItemsJPanel();
      contentPane.add( menuItemsJPanel );
      
-     //Calculate Bill button
-     calculateBillJButton = new JButton();
-     calculateBillJButton.setBounds( 70, 310, 110, 20 );
-     calculateBillJButton.setText( "Calculate Bill" );
-     contentPane.add( calculateBillJButton ); 
-     calculateBillJButton.addActionListener(
-        new ActionListener() //anonymous inner class
+//   --- delete later  //Calculate Bill button
+//     calculateBillJButton = new JButton();
+//     calculateBillJButton.setBounds( 70, 310, 110, 20 );
+//     calculateBillJButton.setText( "Calculate Bill" );
+//     contentPane.add( calculateBillJButton ); 
+//     calculateBillJButton.addActionListener(
+//        new ActionListener() //anonymous inner class
+//            {
+//             public void actionPerformed( ActionEvent event ) 
+//            {
+//               calculateBillJButtonActionPerformed( event );
+//            }
+//         } // end anonymous inner class
+//      ); // end addActionListener
+
+    //Set up saveTableJButton
+     saveTableJButton = new JButton();
+     saveTableJButton.setBounds( 167, 328, 90, 24 );
+     saveTableJButton.setText( "Save Table" );
+     saveTableJButton.setBorder(
+     BorderFactory.createRaisedBevelBorder() );
+     saveTableJButton.setEnabled( false );
+     contentPane.add( saveTableJButton );
+     saveTableJButton.addActionListener(
+        new ActionListener() // anonymous inner class
             {
-             public void actionPerformed( ActionEvent event ) 
+            // event handler called when saveTableJButton is clicked
+            public void actionPerformed( ActionEvent event )
             {
-               calculateBillJButtonActionPerformed( event );
+//               saveTableJButtonActionPerformed( event ); 
             }
+            
+         }// end anonymous inner class
+      ); // end addActionListener         
 
-         } // end anonymous inner class
-
-      ); // end addActionListener
-         
+     
+    //Set up calculateBillJButton
+     calculateBillJButton = new JButton();
+     calculateBillJButton.setBounds( 167, 362, 90, 24 );
+     calculateBillJButton.setText( "Calculate Bill" );
+     calculateBillJButton.setBorder(
+     BorderFactory.createRaisedBevelBorder() );
+     calculateBillJButton.setEnabled( false );
+     contentPane.add( calculateBillJButton );
+     calculateBillJButton.addActionListener(
+        new ActionListener() // anonymous inner class
+            {
+            // event handler called when calculateBillJButton is clicked
+            public void actionPerformed( ActionEvent event )
+            {
+//               calculateBillJButtonActionPerformed( event ); 
+            }
+            
+         }// end anonymous inner class
+      ); // end addActionListener         
+    
+     
+     //Set up payBillJButton
+     payBillJButton = new JButton();
+     payBillJButton.setBounds( 167, 396, 90, 24 );
+     payBillJButton.setText( "Pay Bill" );
+     payBillJButton.setBorder(
+     BorderFactory.createRaisedBevelBorder() );
+     payBillJButton.setEnabled( false );
+     contentPane.add( payBillJButton );
+     payBillJButton.addActionListener(
+        new ActionListener() // anonymous inner class
+            {
+            // event handler called when payBillJButton is clicked
+            public void actionPerformed( ActionEvent event )
+            {
+//               payBillJButtonActionPerformed( event ); 
+            }
+            
+         }// end anonymous inner class
+      ); // end addActionListener   
+     
      
       // **** TODO ****** set up subtotalJLabel
      // set up subtotalJLabel
@@ -283,12 +343,39 @@ public class RestaurantBillCalculator extends JFrame
       //tableNumberJLabel.setBorder(BorderFactory.createLineBorder(Color.black));
       waiterJPanel.add(tableNumberJLabel);//Add tableNumberJLabel onto waiterJPane     
 
-      // **** TODO ****** set up tableNumberJTextField
-      //Create tableNumberJTextField in waiterJPanel
-      tableNumberJTextField = new JTextField();//Create tableNumberJTextField in waiterJPanel
-      tableNumberJTextField.setHorizontalAlignment(SwingConstants.RIGHT);//
-      tableNumberJTextField.setBounds(125, 25, 90, 20);// Size and position of tableNumberJTextField in Waiter information
-      waiterJPanel.add(tableNumberJTextField);//Add tableNumberJTextField onto waiterJPanel
+      //set up tableNumberJComboBox in waiterJPanel
+      tableNumberJComboBox = new JComboBox();
+      tableNumberJComboBox.setBounds( 125, 25, 90, 20 );
+//      beverageJComboBox.setEnabled( false ); - delete this
+      waiterJPanel.add( tableNumberJComboBox );
+//      tableNumberJComboBox.addItemListener(
+
+//         new ItemListener()  // **** TODO ****** anonymous inner class
+//         {
+//            // **** TODO ****** event handler called when item in tableNumberJComboBox
+//            // **** TODO ****** is selected
+//            public void itemStateChanged( ItemEvent event )
+//            {
+//               tableNumberJComboBoxItemStateChanged( event );
+//            }
+//
+//         } // end anonymous inner class
+
+//      ); // end addItemListener
+
+//       **** TODO ****** add items to tableNumberJComboBox
+//       add items to tableNumberJComboBox
+//      tableNumberJComboBox.addItem( "" );
+//      loadCategory( "Beverage", tableNumberJComboBox );     
+      
+      
+      
+//   ---delete later   // **** TODO ****** set up tableNumberJTextField   ---delete later
+//      //Create tableNumberJTextField in waiterJPanel
+//      tableNumberJTextField = new JTextField();//Create tableNumberJTextField in waiterJPanel
+//      tableNumberJTextField.setHorizontalAlignment(SwingConstants.RIGHT);//
+//      tableNumberJTextField.setBounds(125, 25, 90, 20);// Size and position of tableNumberJTextField in Waiter information
+//      waiterJPanel.add(tableNumberJTextField);//Add tableNumberJTextField onto waiterJPanel
        
       // **** TODO ****** set up waiterNameJLabel
       //Create waiterNameJLabel in waiterJPanel
@@ -520,19 +607,18 @@ public class RestaurantBillCalculator extends JFrame
 
    // **** TODO ****** user click Calculate Bill JButton
    private void calculateBillJButtonActionPerformed( 
-      ActionEvent event )
-           
+      ActionEvent event )          
    {
-     if(!tableNumberJTextField.getText().equals("") && !waiterNameJTextField.getText().equals(""))
-       {
+//     --   delete  later if(!tableNumberJTextField.getText().equals("") && !waiterNameJTextField.getText().equals(""))
+//       {
            double total = calculateSubtotal();
            // display subtotal, tax and total
            displayTotal( total );   
-       }
-       else    
-       {    
-       JOptionPane.showMessageDialog (null, "Either table number or waiter number field is empty.", "Please fill out", JOptionPane.INFORMATION_MESSAGE);
-      }
+//       }
+//       else    
+//       {    
+//     --   delete  later   JOptionPane.showMessageDialog (null, "Enter value for table number and waiter number field.", "Please fill out", JOptionPane.INFORMATION_MESSAGE);
+//      }
    } // end method calculateBillJButtonActionPerformed
 
    // **** TODO ****** calculate subtotal
@@ -578,6 +664,36 @@ public class RestaurantBillCalculator extends JFrame
     totalJTextField.setText(
             dollars.format( total + tax ) );    
 } // end method displayTotal
+ 
+    // **** TODO ****** resetJFrame method
+   private void resetJFrame()
+   {
+       // reset instance variable
+       billItems = new ArrayList();
+       
+       // reset and disable menuItemsJPanel
+       menuItemsJPanel.setEnabled( false );
+       beverageJComboBox.setSelectedIndex( 0 );
+       beverageJComboBox.setEnabled( false );
+       
+       // reset and enable waiterJPanel
+       waiterJPanel.setEnabled( true );
+       tableNumberJComboBox.setEnabled( true );
+       tableNumberJComboBox.setSelectedIndex( 0 );
+       waiterNameJTextField.setText( "" );
+       
+       // clear JTextFields
+       subtotalJTextField.setText( "" );
+       taxJTextField.setText( "" );
+       totalJTextField.setText( "" );   
+       
+       // disable JButtons
+       saveTableJButton.setEnabled( false );
+       calculateBillJButton.setEnabled( false );
+       payBillJButton.setEnabled( false );              
+       
+   }// end method resetJFrame 
+   
    
     // **** TODO ****** user close window
    private void frameWindowClosing( WindowEvent event )
