@@ -11,7 +11,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.*;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,13 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 
 public class RestaurantBillCalculator extends JFrame
@@ -42,12 +39,7 @@ public class RestaurantBillCalculator extends JFrame
    // JLabel and JComboBox for Table Number added JComboBox
    private JLabel tableNumberJLabel;
    private JComboBox tableNumberJComboBox;
-   private JTextField tableNumberJTextField;
    
-//   // JLabel and JTextField for table number
-//   private JLabel tableNumberJLabel;
-//   private JTextField tableNumberJTextField;
-
    // JLabel and JTextField for waiter name
    private JLabel waiterNameJLabel;
    private JTextField waiterNameJTextField;
@@ -92,7 +84,6 @@ public class RestaurantBillCalculator extends JFrame
    // JButton for Pay Bill -added
    private JButton payBillJButton;  
    
-
    // constant for tax rate
    private final static double TAX_RATE = 0.05;
 
@@ -106,19 +97,11 @@ public class RestaurantBillCalculator extends JFrame
 
    //declare instance variables Subtotal -added
    private double subtotal;
-   
-   //declare instance variables Tax -added
-   private double tax;
-   
-   //declare instance variables Total -added
-   private double total;   
-   
-   
+      
    // constructor
    public RestaurantBillCalculator( 
   String databaseUserName, String databasePassword )
-   {
- 
+   { 
     // Create database connection
        //JDBC driver and datbase name
         String url = "jdbc:mysql://localhost:3306/restaurant";
@@ -130,7 +113,7 @@ public class RestaurantBillCalculator extends JFrame
          myConnection = DriverManager.getConnection(url,databaseUserName, databasePassword); 
          //Create statement
          myStatement = myConnection.createStatement();
-//         System.out.println("Connected to DB");
+//         System.out.println("Connected to DB"); 
          myStatement = myConnection.createStatement();
 
         }//end try
@@ -171,21 +154,6 @@ public class RestaurantBillCalculator extends JFrame
      createMenuItemsJPanel();
      contentPane.add( menuItemsJPanel );
      
-//   --- delete later  //Calculate Bill button
-//     calculateBillJButton = new JButton();
-//     calculateBillJButton.setBounds( 70, 310, 110, 20 );
-//     calculateBillJButton.setText( "Calculate Bill" );
-//     contentPane.add( calculateBillJButton ); 
-//     calculateBillJButton.addActionListener(
-//        new ActionListener() //anonymous inner class
-//            {
-//             public void actionPerformed( ActionEvent event ) 
-//            {
-//               calculateBillJButtonActionPerformed( event );
-//            }
-//         } // end anonymous inner class
-//      ); // end addActionListener
-
     //Set up saveTableJButton
      saveTableJButton = new JButton();
      saveTableJButton.setBounds( 167, 328, 90, 24 );
@@ -200,14 +168,12 @@ public class RestaurantBillCalculator extends JFrame
             // event handler called when saveTableJButton is clicked
             public void actionPerformed( ActionEvent event )
             {
-//               saveTableJButtonActionPerformed( event ); 
-            }
-            
+               saveTableJButtonActionPerformed( event ); 
+            }           
          }// end anonymous inner class
-      ); // end addActionListener         
-
+      ); // end addActionListener              
      
-    //Set up calculateBillJButton
+     //Set up calculateBillJButton
      calculateBillJButton = new JButton();
      calculateBillJButton.setBounds( 167, 362, 90, 24 );
      calculateBillJButton.setText( "Calculate Bill" );
@@ -221,41 +187,37 @@ public class RestaurantBillCalculator extends JFrame
             // event handler called when calculateBillJButton is clicked
             public void actionPerformed( ActionEvent event )
             {
-//               calculateBillJButtonActionPerformed( event ); 
-            }
-            
+               calculateBillJButtonActionPerformed( event ); 
+            }          
          }// end anonymous inner class
-      ); // end addActionListener         
-    
+      ); // end addActionListener    
      
-     //Set up payBillJButton
-     payBillJButton = new JButton();
-     payBillJButton.setBounds( 167, 396, 90, 24 );
-     payBillJButton.setText( "Pay Bill" );
-     payBillJButton.setBorder(
-     BorderFactory.createRaisedBevelBorder() );
-     payBillJButton.setEnabled( false );
-     contentPane.add( payBillJButton );
-     payBillJButton.addActionListener(
-        new ActionListener() // anonymous inner class
-            {
-            // event handler called when payBillJButton is clicked
-            public void actionPerformed( ActionEvent event )
-            {
-//               payBillJButtonActionPerformed( event ); 
-            }
-            
-         }// end anonymous inner class
-      ); // end addActionListener   
+       //set up payBillJButton
+      payBillJButton = new JButton();
+      payBillJButton.setBounds(167, 396, 90, 24);
+      payBillJButton.setText("Pay Bill");
+      payBillJButton.setBorder(
+        BorderFactory.createRaisedBevelBorder());
+      payBillJButton.setEnabled(false);
+      contentPane.add(payBillJButton);
+      payBillJButton.addActionListener(
+              new ActionListener()//anonmous inner class
+              {
+                  //event handler called when payBillJButton is clicked
+                  public void actionPerformed(ActionEvent event)
+                  {
+                      payBillJButtonActionPerformed(event);
+                  }//end actionPerformed method
+              }//end inner class
+      );//end addActionListener    
      
-     
+
       // **** TODO ****** set up subtotalJLabel
      // set up subtotalJLabel
      subtotalJLabel = new JLabel();
      subtotalJLabel.setBounds( 15, 340, 56, 16 );
      subtotalJLabel.setText( "Subtotal:" );
      contentPane.add( subtotalJLabel );
-
      
       // **** TODO ****** set up subtotalJTextField
      subtotalJTextField = new JTextField();
@@ -265,7 +227,6 @@ public class RestaurantBillCalculator extends JFrame
      BorderFactory.createLoweredBevelBorder() );
      subtotalJTextField.setHorizontalAlignment( JTextField.RIGHT );
      contentPane.add( subtotalJTextField );
-
 
       // **** TODO ****** set up taxJLabel
      // set up taxJLabel
@@ -297,13 +258,11 @@ public class RestaurantBillCalculator extends JFrame
      BorderFactory.createLoweredBevelBorder() );
      totalJTextField.setHorizontalAlignment( JTextField.RIGHT );
      contentPane.add( totalJTextField );
-     
-     
+         
       // **** TODO ****** set properties of application's window
      setTitle( "Restaurant Bill Calculator" ); // set window title 
      setSize( 280, 500 ); // set window size
      setVisible( true ); // display window
-
 
       // **** TODO ****** ensure database connection is closed
       // **** TODO ****** when user quits application
@@ -340,56 +299,45 @@ public class RestaurantBillCalculator extends JFrame
       tableNumberJLabel = new JLabel();//Create tableNumberJLabel in waiterJPanel
       tableNumberJLabel.setText("Table number:");//JLabel table number in waiterJPanel
       tableNumberJLabel.setBounds(30, 25, 90, 20);// Size and position of tableNumberJLabel in Waiter information
-      //tableNumberJLabel.setBorder(BorderFactory.createLineBorder(Color.black));
       waiterJPanel.add(tableNumberJLabel);//Add tableNumberJLabel onto waiterJPane     
 
       //set up tableNumberJComboBox in waiterJPanel
       tableNumberJComboBox = new JComboBox();
-      tableNumberJComboBox.setBounds( 125, 25, 90, 20 );
-//      beverageJComboBox.setEnabled( false ); - delete this
+      tableNumberJComboBox.setBounds( 150, 25, 70, 20 );
       waiterJPanel.add( tableNumberJComboBox );
-//      tableNumberJComboBox.addItemListener(
+      tableNumberJComboBox.addItemListener(
 
-//         new ItemListener()  // **** TODO ****** anonymous inner class
-//         {
-//            // **** TODO ****** event handler called when item in tableNumberJComboBox
-//            // **** TODO ****** is selected
-//            public void itemStateChanged( ItemEvent event )
-//            {
-//               tableNumberJComboBoxItemStateChanged( event );
-//            }
-//
-//         } // end anonymous inner class
+         new ItemListener()  // **** TODO ****** anonymous inner class
+         {
+            // **** TODO ****** event handler called when item in tableNumberJComboBox
+            // **** TODO ****** is selected
+            public void itemStateChanged( ItemEvent event )
+            {
+               tableNumberJComboBoxItemStateChanged( event );
+            }
 
-//      ); // end addItemListener
+         } // end anonymous inner class
+
+      ); // end addItemListener
 
 //       **** TODO ****** add items to tableNumberJComboBox
 //       add items to tableNumberJComboBox
-//      tableNumberJComboBox.addItem( "" );
-//      loadCategory( "Beverage", tableNumberJComboBox );     
+      tableNumberJComboBox.addItem( "" );
+//      loadTableNumbers( "Table number", tableNumberJComboBox );  -- delete later
+      loadTableNumbers();            
       
-      
-      
-//   ---delete later   // **** TODO ****** set up tableNumberJTextField   ---delete later
-//      //Create tableNumberJTextField in waiterJPanel
-//      tableNumberJTextField = new JTextField();//Create tableNumberJTextField in waiterJPanel
-//      tableNumberJTextField.setHorizontalAlignment(SwingConstants.RIGHT);//
-//      tableNumberJTextField.setBounds(125, 25, 90, 20);// Size and position of tableNumberJTextField in Waiter information
-//      waiterJPanel.add(tableNumberJTextField);//Add tableNumberJTextField onto waiterJPanel
-       
       // **** TODO ****** set up waiterNameJLabel
       //Create waiterNameJLabel in waiterJPanel
-      waiterJPanel.setLayout(null);//NO layout manager in use
       waiterNameJLabel = new JLabel();//Create waiterNameJLabel in waiterJPanel
       waiterNameJLabel.setText("Waiter name:");//JLabel Waiter name in waiterJPanel
       waiterNameJLabel.setBounds(30, 50, 90, 20);// Size and position of waiterNameJLabel in Waiter information
-      //waiterNameJLabel.setBorder(BorderFactory.createLineBorder(Color.black));
       waiterJPanel.add(waiterNameJLabel);//Add waiterNameJLabel onto waiterJPanel      
 
       // **** TODO ****** set up waiterNameJTextField
       //Create tableNumberJTextField in waiterJPanel
       waiterNameJTextField = new JTextField();//Create tableNumberJTextField in waiterJPanel
       waiterNameJTextField.setHorizontalAlignment(SwingConstants.RIGHT);//
+      waiterNameJTextField.setEditable( false );
       waiterNameJTextField.setBounds(125, 50, 90, 20);// Size and position of tableNumberJTextField in Waiter information
       waiterJPanel.add(waiterNameJTextField);//Add tableNumberJTextField onto waiterJPanel
 
@@ -403,7 +351,6 @@ public class RestaurantBillCalculator extends JFrame
       menuItemsJPanel.setBounds( 20, 152, 232, 152 );
       menuItemsJPanel.setBorder( BorderFactory.createTitledBorder( 
       BorderFactory.createEtchedBorder(), "Menu Items" ) );
-//      menuItemsJPanel.setEnabled( false ); - delete this
       menuItemsJPanel.setLayout( null );
 
       //  set up beverageJLabel
@@ -415,7 +362,7 @@ public class RestaurantBillCalculator extends JFrame
       // set up beverageJComboBox
       beverageJComboBox = new JComboBox();
       beverageJComboBox.setBounds( 88, 24, 128, 24 );
-//      beverageJComboBox.setEnabled( false ); - delete this
+      beverageJComboBox.setEnabled( false ); 
       menuItemsJPanel.add( beverageJComboBox );
       beverageJComboBox.addItemListener(
 
@@ -435,21 +382,19 @@ public class RestaurantBillCalculator extends JFrame
 //       **** TODO ****** add items to beverageJComboBox
 //       add items to beverageJComboBox
       beverageJComboBox.addItem( "" );
-      loadCategory( "Beverage", beverageJComboBox );
-
-
+      loadCategory("Beverage", beverageJComboBox);
+     
       // **** TODO ****** set up appetizerJLabel
       appetizerJLabel = new JLabel();
       appetizerJLabel.setBounds( 8, 55, 80, 24 );
       appetizerJLabel.setText( "Appetizer:" );
-      menuItemsJPanel.add( appetizerJLabel) ;
-     
+      menuItemsJPanel.add( appetizerJLabel) ;     
 
       // **** TODO ****** set up appetizerJComboBox
       appetizerJComboBox = new JComboBox();
       appetizerJComboBox.setBounds( 88, 55, 128, 24 );
-//      appetizerJComboBox.setEnabled( false ); - delete this
       menuItemsJPanel.add( appetizerJComboBox );
+      appetizerJComboBox.setEnabled(false);
       appetizerJComboBox.addItemListener(
 
          new ItemListener()  // **** TODO ****** anonymous inner class
@@ -477,7 +422,7 @@ public class RestaurantBillCalculator extends JFrame
       // **** TODO ****** set up mainCourseJComboBox
       mainCourseJComboBox = new JComboBox();
       mainCourseJComboBox.setBounds( 88, 86, 128, 24 );
-     // mainCourseJComboBox.setEnabled( false );- delete this
+      mainCourseJComboBox.setEnabled( false );
       menuItemsJPanel.add( mainCourseJComboBox );
       
       mainCourseJComboBox.addItemListener(
@@ -501,7 +446,6 @@ public class RestaurantBillCalculator extends JFrame
       mainCourseJComboBox.addItem( "" );
       loadCategory( "Main Course", mainCourseJComboBox );
       
-
       // **** TODO ****** set up dessertJLabel
       dessertJLabel = new JLabel();
       dessertJLabel.setBounds( 8, 117, 80, 24 );
@@ -511,7 +455,7 @@ public class RestaurantBillCalculator extends JFrame
      // **** TODO ****** set up dessertJComboBox 
       dessertJComboBox = new JComboBox();
       dessertJComboBox.setBounds( 88, 117, 128, 24 );
-//      dessertJComboBox.setEnabled( false );- delete this
+      dessertJComboBox.setEnabled( false );
       menuItemsJPanel.add( dessertJComboBox );
       dessertJComboBox.addItemListener(
       // **** TODO ****** add items to dessertJComboBox 
@@ -535,7 +479,32 @@ public class RestaurantBillCalculator extends JFrame
       loadCategory( "Dessert", dessertJComboBox );
       
    } // end method createMenuItemsJPanel
-
+     
+      // **** TODO ****** set up loadTableNumbers
+      private void loadTableNumbers() 
+      {
+          // read all table numbers from database
+          try
+          {
+              // obtain all table numbers
+              myResultSet = myStatement.executeQuery(
+                      "SELECT tableNumber FROM restaurantTables" );
+              // add numbers to tableNumberJComboBox
+              while ( myResultSet.next() == true )
+              {
+                  tableNumberJComboBox.addItem(
+                         String.valueOf( myResultSet.getInt(
+                              "tableNumber" ) ) );        
+              }//end while
+              myResultSet.close(); // close myResultSet
+              
+          }//end try
+          // catch SQLException
+          catch ( SQLException exception )
+          {
+              exception.printStackTrace();
+          }
+      }// end method loadTableNumbers   
    
    // **** TODO ****** add items to JComboBox
    private void loadCategory(
@@ -562,6 +531,55 @@ public class RestaurantBillCalculator extends JFrame
     }       
    } // end method loadCategory
 
+    // **** TODO ****** user select tableNumber
+ private void tableNumberJComboBoxItemStateChanged( ItemEvent event )
+ {
+     String selectedTableNumber = ( String ) event.getItem();
+     // select a number
+     if ( !selectedTableNumber.equals( "" ) && event.getStateChange() == ItemEvent.SELECTED )
+     {
+         // load table data
+         try
+         {
+             // get table data
+             myResultSet = myStatement.executeQuery( "SELECT * FROM "
+                     + "restaurantTables WHERE tableNumber = " +
+                     Integer.parseInt( selectedTableNumber ) );
+             
+             // if myResultSet not empty
+             if ( myResultSet.next() == true )
+             {
+                 waiterNameJTextField.setText(
+                 myResultSet.getString( "waiterName" ) );
+                 subtotal = myResultSet.getDouble( "subtotal" );
+                 displayTotal( subtotal );
+             }//end if
+             
+             myResultSet.close(); // close myResultSet
+         }//end try
+         // catch SQLException
+         catch ( SQLException exception )
+         {
+             exception.printStackTrace();
+         }
+        //enableJComboBoxes in menuItemsJPanel
+           menuItemsJPanel.setEnabled(true);
+           beverageJComboBox.setEnabled(true);
+           mainCourseJComboBox.setEnabled(true);
+           appetizerJComboBox.setEnabled(true);
+           dessertJComboBox.setEnabled (true);
+        //disable JComboBox in waiterJPanel
+           waiterJPanel.setEnabled(false);
+           tableNumberJComboBox.setEnabled(false);
+           saveTableJButton.setEnabled(true);
+           calculateBillJButton.setEnabled(true);
+           payBillJButton.setEnabled(true);
+         
+     }//end if
+     
+ }// end method tableNumberJComboBoxItemStateChanged
+   
+   
    // **** TODO ****** user select beverage
    private void beverageJComboBoxItemStateChanged( ItemEvent event )
    {
@@ -604,7 +622,48 @@ public class RestaurantBillCalculator extends JFrame
              billItems.add(( String ) dessertJComboBox.getSelectedItem() );  
            }       
    } // end method dessertJComboBoxItemStateChanged
-
+   
+    // **** TODO ****** user click saveTableJButton
+    private void saveTableJButtonActionPerformed( ActionEvent event )  
+    {
+        // calculate subtotal
+        subtotal = calculateSubtotal();
+        // update subtotal in database
+        updateTable();
+        // reset JFrame
+        resetJFrame();
+        
+    }// end method saveTableJButtonActionPerformed
+    
+    // **** TODO ****** user click Pay Bill Button    
+    private void payBillJButtonActionPerformed(ActionEvent event )
+    {
+        // calculate subtotal
+        subtotal = 0.0;
+        // update subtotal in database
+        updateTable();
+        // reset JFrame
+        resetJFrame();        
+    }
+    
+    // **** TODO ****** method updateTable  
+    private void updateTable()
+    {
+        // update subtotal for table number in database
+        try
+        {
+            myStatement.executeUpdate( "UPDATE restaurantTables SET " +
+            "subtotal = " + subtotal + " WHERE tableNumber = " +
+            Integer.parseInt(
+                    ( String ) tableNumberJComboBox.getSelectedItem() ) );
+        }//end try
+        catch ( SQLException exception )
+        {
+            exception.printStackTrace();
+        }
+    }// end method updateTable
+    
+    //delete this and where class get called
    // **** TODO ****** user click Calculate Bill JButton
    private void calculateBillJButtonActionPerformed( 
       ActionEvent event )          
@@ -659,7 +718,7 @@ public class RestaurantBillCalculator extends JFrame
     subtotalJTextField.setText( dollars.format( total ) );
     // calculate and display tax
     double tax = total * TAX_RATE;
-    taxJTextField.setText( dollars.format( total ) );
+    taxJTextField.setText( dollars.format( tax ) );
     // display total
     totalJTextField.setText(
             dollars.format( total + tax ) );    
@@ -675,6 +734,12 @@ public class RestaurantBillCalculator extends JFrame
        menuItemsJPanel.setEnabled( false );
        beverageJComboBox.setSelectedIndex( 0 );
        beverageJComboBox.setEnabled( false );
+       appetizerJComboBox.setSelectedIndex( 0 );
+       appetizerJComboBox.setEnabled( false );
+       mainCourseJComboBox.setSelectedIndex(0);
+       mainCourseJComboBox.setEnabled(false);
+       dessertJComboBox.setSelectedIndex(0);
+       dessertJComboBox.setEnabled(false);
        
        // reset and enable waiterJPanel
        waiterJPanel.setEnabled( true );
