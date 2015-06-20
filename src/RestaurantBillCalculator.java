@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 
 public class RestaurantBillCalculator extends JFrame
@@ -665,19 +666,13 @@ public class RestaurantBillCalculator extends JFrame
     
     //delete this and where class get called
    // **** TODO ****** user click Calculate Bill JButton
-   private void calculateBillJButtonActionPerformed( 
-      ActionEvent event )          
+   private void calculateBillJButtonActionPerformed(ActionEvent event )          
    {
-//     --   delete  later if(!tableNumberJTextField.getText().equals("") && !waiterNameJTextField.getText().equals(""))
-//       {
+           //call calculateSubtotal and return a double value
            double total = calculateSubtotal();
            // display subtotal, tax and total
            displayTotal( total );   
-//       }
-//       else    
-//       {    
-//     --   delete  later   JOptionPane.showMessageDialog (null, "Enter value for table number and waiter number field.", "Please fill out", JOptionPane.INFORMATION_MESSAGE);
-//      }
+
    } // end method calculateBillJButtonActionPerformed
 
    // **** TODO ****** calculate subtotal
@@ -798,8 +793,8 @@ public class RestaurantBillCalculator extends JFrame
       }
       else
       {
-         System.out.println( "Usage: java " + 
-            "RestaurantBillCalculator databaseUserName databasePassword" );
+            //Display message by missing arguments
+            JOptionPane.showMessageDialog (null, "are needed. Please type in UserName and Password", "Two arguments", JOptionPane.INFORMATION_MESSAGE);
     }
 
    } // end method main
